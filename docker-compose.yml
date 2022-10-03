@@ -1,0 +1,32 @@
+version: '3.6'
+services:
+  backend:
+    build:
+      context: .
+      target: backend
+    restart: unless-stopped
+    tty: true
+    working_dir: /home/node/app
+    ports:
+      - '11000:11000'
+    volumes:
+      - '.:/home/node/app'
+      - /home/node/app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true npm run start:dev
+    command: npm run start:dev
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.28
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=nest-graphql
+    ports:
+      - '3307:3306'
+    volumes:
+      - ./database/data:/var/lib/mysql
+      - ./docker/docker_mysql_init.sql:/docker-entrypoint-initdb.d/docker_mysql_init.sql

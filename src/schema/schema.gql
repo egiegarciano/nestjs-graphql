@@ -1,0 +1,63 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Owner {
+  id: Int!
+  name: String!
+  username: String!
+  pets: [Pet!]
+}
+
+type Pet {
+  id: Int!
+  name: String!
+  type: String
+  ownerId: Int
+  owner: Owner
+}
+
+type LoginResponse {
+  access_token: String!
+  owner: Owner!
+}
+
+type Query {
+  pets: [Pet!]!
+  getPet(id: Int!): Pet!
+  owners: [Owner!]!
+  getOwner(username: String!): Owner!
+}
+
+type Mutation {
+  createPet(createPetInput: CreatePetInput!): Pet!
+  createOwner(createOwnerInput: CreateOwnerInput!): Owner!
+  updateOwner(updateOwnerInput: UpdateOwnerInput!): Owner!
+  removeOwner(id: Int!): Owner!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
+  signup(signupUserInput: CreateOwnerInput!): Owner!
+}
+
+input CreatePetInput {
+  name: String!
+  type: String
+  ownerId: Int!
+}
+
+input CreateOwnerInput {
+  name: String!
+  username: String!
+  password: String!
+}
+
+input UpdateOwnerInput {
+  name: String
+  username: String
+  password: String
+  id: Int!
+}
+
+input LoginUserInput {
+  username: String!
+  password: String!
+}
