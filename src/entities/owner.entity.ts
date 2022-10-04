@@ -20,6 +20,10 @@ export class Owner {
   @Column()
   password: string;
 
+  @Column({ nullable: true, type: 'longtext' })
+  @Field({ nullable: true })
+  access_token: string;
+
   @OneToMany(() => Pet, (pet) => pet.owner)
   @Field(() => [Pet], { nullable: true }) // When the field is an array, we must manually indicate the array type in the Field() decorator's type function, as shown below:
   pets?: Pet[];

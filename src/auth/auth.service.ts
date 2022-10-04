@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { OwnersService } from 'src/owners/owners.service';
 import { OwnerResponse } from './dto/owner-response';
 import { CreateOwnerInput } from 'src/owners/dto/create-owner.input';
+import { LogoutInput } from './dto/logout-user.input';
 
 @Injectable()
 export class AuthService {
@@ -30,13 +31,20 @@ export class AuthService {
   }
 
   async login(owner: OwnerResponse) {
-    // const { password, ...result } = user;
+    const access_token = this.jwtService.sign({
+      username: owner.username,
+      sub: owner.id,
+    });
+
+    await this.ownersService.updateCredential({
+      id: owner.id,
+      name: owner.name,
+      username: owner.username,
+      access_token: access_token,
+    });
 
     return {
-      access_token: this.jwtService.sign({
-        username: owner.username,
-        sub: owner.id,
-      }),
+      access_token: access_token,
       owner,
     };
   }
@@ -50,8 +58,25 @@ export class AuthService {
       throw new Error('User already exists!');
     }
 
-    const password = await bcrypt.hash(signupUserInput.password, 10);
+    const { password: ownerPassword, ...rest } = signupUserInput;
 
-    return this.ownersService.createOwner({ password, ...signupUserInput });
+    const password = await bcrypt.hash(ownerPassword, 10);
+
+    return this.ownersService.createOwner({ password, ...rest });
+  }
+
+  async logout(logoutInput: LogoutInput) {
+    const user = await this.ownersService.findOneOWner(logoutInput.username);
+
+    await this.ownersService.updateCredential({
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      access_token: '',
+    });
+
+    return {
+      message: 'Successfully logout',
+    };
   }
 }

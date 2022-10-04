@@ -12,6 +12,9 @@ export class OwnerResponse {
   @Field()
   username: string;
 
+  @Field()
+  access_token: string;
+
   @Field(() => [Pet])
   pets?: Pet[];
 }

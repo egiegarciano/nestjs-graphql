@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CreateOwnerInput } from './dto/create-owner.input';
-import { UpdateOwnerInput } from './dto/update-owner.input';
 import { Owner } from '../entities/owner.entity';
+import { OwnerResponse } from 'src/auth/dto/owner-response';
 
 @Injectable()
 export class OwnersService {
@@ -32,9 +32,8 @@ export class OwnersService {
     });
   }
 
-  // Not working
-  update(id: number, updateOwnerInput: UpdateOwnerInput) {
-    return `This action updates a #${id} owner`;
+  updateCredential(owner: OwnerResponse) {
+    return this.ownersRespository.save(owner);
   }
 
   remove(id: number) {
