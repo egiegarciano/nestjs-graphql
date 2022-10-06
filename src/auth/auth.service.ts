@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -20,13 +20,24 @@ export class AuthService {
   ): Promise<OwnerResponse> {
     const user = await this.ownersService.findOneOWner(username);
 
-    if (!user) throw new Error('No user found');
+    if (!user) {
+      throw new Error('No user found');
+    }
 
-    const valid = await bcrypt.compare(password, user.password);
+    const passwordIsInvalid = await bcrypt.compare(password, user.password);
 
-    if (user && valid) {
-      const { password, ...result } = user;
-      return result;
+    if (!passwordIsInvalid) {
+      throw new UnauthorizedException('Credentials are not valid');
+    }
+
+    try {
+      if (user && passwordIsInvalid) {
+        const { password, ...result } = user;
+        return result;
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error('Some error occurred');
     }
   }
 

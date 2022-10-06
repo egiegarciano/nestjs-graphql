@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { OwnersService } from './owners.service';
@@ -26,6 +26,11 @@ export class OwnersResolver {
   @Query(() => Owner, { name: 'getOwner' })
   findOne(@Args('username') username: string) {
     return this.ownersService.findOneOWner(username);
+  }
+
+  @Query(() => Owner)
+  getMe(@Context() context: any) {
+    return this.ownersService.findOwnerAccessToken(context.user.id);
   }
 
   // not working yet

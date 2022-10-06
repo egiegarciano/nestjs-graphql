@@ -1,20 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+import { OwnersService } from 'src/owners/owners.service';
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
+  constructor(private readonly ownersService: OwnersService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: 'hide-me', // process.env.JWT_SECRET
-      // logging: true,
     });
+    // super({
+    //   jwtFromRequest: ExtractJwt.fromExtractors([
+    //     (request: any) => {
+    //       return request?.cookies?.accessToken;
+    //     },
+    //   ]),
+    //   secretOrKey: 'hide-me',
+    // });
   }
 
   async validate(payload: any) {
+    // payload is coming from jwt.sign when login
     // payload = decoded JWT
-    return { userId: payload.sub, username: payload.username }; // this will be available in the context
+    // this will be available in the context
+    try {
+      return await this.ownersService.findOneOWner(payload.username);
+    } catch (error) {
+      throw new UnauthorizedException('User is not logged in');
+    }
   }
 }

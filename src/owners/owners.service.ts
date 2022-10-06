@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -36,6 +36,19 @@ export class OwnersService {
     return this.ownersRespository.save(owner);
   }
 
+  async findOwnerAccessToken(userId: number): Promise<Owner> {
+    const user = await this.ownersRespository.findOne({
+      where: { id: userId },
+    });
+
+    if (!user.access_token) {
+      throw new UnauthorizedException('User is not logged in');
+    }
+
+    return user;
+  }
+
+  // not working
   remove(id: number) {
     return `This action removes a #${id} owner`;
   }
