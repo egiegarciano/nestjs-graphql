@@ -41,7 +41,7 @@ export class OwnersService {
       where: { id: userId },
     });
 
-    if (!user.access_token) {
+    if (!user || !user.access_token) {
       throw new UnauthorizedException('User is not logged in');
     }
 

@@ -28,9 +28,10 @@ export class OwnersResolver {
     return this.ownersService.findOneOWner(username);
   }
 
-  @Query(() => Owner)
+  @Query(() => Owner, { name: 'me' })
+  @UseGuards(JwtAuthGuard)
   getMe(@Context() context: any) {
-    return this.ownersService.findOwnerAccessToken(context.user.id);
+    return this.ownersService.findOwnerAccessToken(context.req.user.id);
   }
 
   // not working yet

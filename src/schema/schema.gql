@@ -32,7 +32,7 @@ type Query {
   getPet(id: Int!): Pet!
   owners: [Owner!]!
   getOwner(username: String!): Owner!
-  getMe: Owner!
+  me: Owner!
 }
 
 type Mutation {

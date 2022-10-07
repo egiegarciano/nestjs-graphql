@@ -20,24 +20,23 @@ export class AuthService {
   ): Promise<OwnerResponse> {
     const user = await this.ownersService.findOneOWner(username);
 
+    const sampleErrors: { property: string; message: string }[] = [];
+
     if (!user) {
-      throw new Error('No user found');
+      sampleErrors.push({ property: 'username', message: 'No user found' });
+      throw new UnauthorizedException({ sampleErrors }, 'No user found');
     }
 
     const passwordIsInvalid = await bcrypt.compare(password, user.password);
 
     if (!passwordIsInvalid) {
+      // try to use the UserInputError from apollo server
       throw new UnauthorizedException('Credentials are not valid');
     }
 
-    try {
-      if (user && passwordIsInvalid) {
-        const { password, ...result } = user;
-        return result;
-      }
-    } catch (error) {
-      console.log(error);
-      throw new Error('Some error occurred');
+    if (user && passwordIsInvalid) {
+      const { password, ...result } = user;
+      return result;
     }
   }
 

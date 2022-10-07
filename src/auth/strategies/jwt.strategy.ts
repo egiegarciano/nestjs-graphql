@@ -26,10 +26,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // payload is coming from jwt.sign when login
     // payload = decoded JWT
     // this will be available in the context
-    try {
-      return await this.ownersService.findOneOWner(payload.username);
-    } catch (error) {
-      throw new UnauthorizedException('User is not logged in');
-    }
+    return { id: payload.sub, username: payload.username };
+
+    // try {
+    //   return await this.ownersService.findOneOWner(payload.username);
+    // } catch (error) {
+    //   throw new UnauthorizedException('User is not logged in');
+    // }
   }
 }
