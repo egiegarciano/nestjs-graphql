@@ -6,6 +6,7 @@ import { OwnersService } from 'src/owners/owners.service';
 import { OwnerResponse } from './dto/owner-response';
 import { CreateOwnerInput } from 'src/owners/dto/create-owner.input';
 import { LogoutInput } from './dto/logout-user.input';
+import { AuthenticationError } from 'apollo-server-express';
 
 @Injectable()
 export class AuthService {
@@ -25,13 +26,13 @@ export class AuthService {
     if (!user) {
       sampleErrors.push({ property: 'username', message: 'No user found' });
       throw new UnauthorizedException({ sampleErrors }, 'No user found');
+      // throw new AuthenticationError('No user found', { sampleErrors });
     }
 
     const passwordIsInvalid = await bcrypt.compare(password, user.password);
 
     if (!passwordIsInvalid) {
-      // try to use the UserInputError from apollo server
-      throw new UnauthorizedException('Credentials are not valid');
+      throw new UnauthorizedException('Credentials are not valid'); // haven't try to parse this in frontend
     }
 
     if (user && passwordIsInvalid) {
@@ -61,11 +62,11 @@ export class AuthService {
 
   async signup(signupUserInput: CreateOwnerInput) {
     const user = await this.ownersService.findOneOWner(
-      signupUserInput.username,
+      signupUserInput.username, // should be email
     );
 
     if (user) {
-      throw new Error('User already exists!');
+      throw new Error('User already exists!'); // haven't try to parse this in frontend
     }
 
     const { password: ownerPassword, ...rest } = signupUserInput;

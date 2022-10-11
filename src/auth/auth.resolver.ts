@@ -23,7 +23,9 @@ export class AuthResolver {
   }
 
   @Mutation(() => Owner)
-  signup(@Args('signupUserInput') signupUserInput: CreateOwnerInput) {
+  signup(
+    @Args('signupUserInput') signupUserInput: CreateOwnerInput,
+  ): Promise<Owner> {
     return this.authService.signup(signupUserInput);
   }
 

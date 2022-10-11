@@ -3,19 +3,11 @@ import { UseGuards } from '@nestjs/common';
 
 import { OwnersService } from './owners.service';
 import { Owner } from '../entities/owner.entity';
-import { CreateOwnerInput } from './dto/create-owner.input';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @Resolver(() => Owner)
 export class OwnersResolver {
   constructor(private readonly ownersService: OwnersService) {}
-
-  @Mutation(() => Owner)
-  createOwner(
-    @Args('createOwnerInput') createOwnerInput: CreateOwnerInput,
-  ): Promise<Owner> {
-    return this.ownersService.createOwner(createOwnerInput);
-  }
 
   @Query(() => [Owner], { name: 'owners' })
   @UseGuards(JwtAuthGuard)

@@ -12,10 +12,10 @@ export class OwnersService {
     @InjectRepository(Owner) private ownersRespository: Repository<Owner>,
   ) {}
 
-  createOwner(createOwnerInput: CreateOwnerInput): Promise<Owner> {
+  async createOwner(createOwnerInput: CreateOwnerInput): Promise<Owner> {
     const newOwner = this.ownersRespository.create(createOwnerInput);
 
-    return this.ownersRespository.save(newOwner);
+    return await this.ownersRespository.save(newOwner);
   }
 
   findAll(): Promise<Owner[]> {
