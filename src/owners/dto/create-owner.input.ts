@@ -1,5 +1,7 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
+
+import { CustomEmailScalar } from 'src/lib/custom-scalar-type/GraphQLEmail';
 
 @InputType()
 export class CreateOwnerInput {
@@ -7,9 +9,10 @@ export class CreateOwnerInput {
   @Field()
   name: string;
 
-  @Field()
   @IsNotEmpty()
-  username: string;
+  @IsEmail()
+  @Field()
+  email: string;
 
   @IsNotEmpty()
   @MinLength(8)

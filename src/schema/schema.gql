@@ -5,9 +5,15 @@
 type Owner {
   id: Int!
   name: String!
-  username: String!
+  email: String!
   access_token: String
+  role: Role!
   pets: [Pet!]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 type Pet {
@@ -16,6 +22,14 @@ type Pet {
   type: String
   ownerId: Int
   owner: Owner
+}
+
+type Admin {
+  id: Int!
+  name: String!
+  email: String!
+  access_token: String
+  role: Role!
 }
 
 type LoginResponse {
@@ -33,14 +47,18 @@ type Query {
   owners: [Owner!]!
   getOwner(username: String!): Owner!
   me: Owner!
+  getOneAdmin(email: String!): Admin!
+  currentAdmin: Admin!
 }
 
 type Mutation {
   createPet(createPetInput: CreatePetInput!): Pet!
-  removeOwner(id: Int!): Owner!
+  removeOwner(id: Int!): String!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signupUserInput: CreateOwnerInput!): Owner!
   logout(logoutInput: LogoutInput!): LogoutOutput!
+  adminLogin(loginAdminInput: LoginAdminInput!): Admin!
+  adminLogout(logoutInput: LogoutInput!): LogoutOutput!
 }
 
 input CreatePetInput {
@@ -50,16 +68,21 @@ input CreatePetInput {
 }
 
 input LoginUserInput {
-  username: String!
+  email: String!
   password: String!
 }
 
 input CreateOwnerInput {
   name: String!
-  username: String!
+  email: String!
   password: String!
 }
 
 input LogoutInput {
-  username: String!
+  email: String!
+}
+
+input LoginAdminInput {
+  email: String!
+  password: String!
 }

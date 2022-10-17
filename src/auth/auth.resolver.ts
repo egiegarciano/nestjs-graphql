@@ -8,6 +8,8 @@ import { Owner } from 'src/entities/owner.entity';
 import { CreateOwnerInput } from 'src/owners/dto/create-owner.input';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { LogoutInput, LogoutOutput } from './dto/logout-user.input';
+import { Admin } from 'src/entities/admin.entity';
+import { LoginAdminInput } from './dto/login-admin.input';
 
 @Resolver()
 export class AuthResolver {
@@ -32,5 +34,15 @@ export class AuthResolver {
   @Mutation(() => LogoutOutput)
   logout(@Args('logoutInput') logoutInput: LogoutInput) {
     return this.authService.logout(logoutInput);
+  }
+
+  @Mutation(() => Admin)
+  adminLogin(@Args('loginAdminInput') loginAdminInput: LoginAdminInput) {
+    return this.authService.adminLogin(loginAdminInput);
+  }
+
+  @Mutation(() => LogoutOutput)
+  adminLogout(@Args('logoutInput') logoutInput: LogoutInput) {
+    return this.authService.adminLogout(logoutInput);
   }
 }

@@ -11,6 +11,8 @@ import { PetsModule } from './pets/pets.module';
 import { OwnersModule } from './owners/owners.module';
 import { AppDataSource } from 'ormconfig';
 import { AuthModule } from './auth/auth.module';
+import { AdminModule } from './admin/admin.module';
+import { CustomEmailScalar } from './lib/custom-scalar-type/GraphQLEmail';
 
 @Module({
   imports: [
@@ -23,10 +25,12 @@ import { AuthModule } from './auth/auth.module';
         origin: 'http://localhost:3000',
         credentials: true,
       },
+      // resolvers: { Email: CustomEmailScalar },
     }),
     PetsModule,
     OwnersModule,
     AuthModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

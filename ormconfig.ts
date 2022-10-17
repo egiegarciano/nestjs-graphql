@@ -1,6 +1,7 @@
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { SeederOptions } from 'typeorm-extension';
 
-export const AppDataSource = new DataSource({
+const options: DataSourceOptions & SeederOptions = {
   type: 'mysql',
   host: 'db',
   port: 3306,
@@ -13,4 +14,8 @@ export const AppDataSource = new DataSource({
   migrationsRun: false,
   migrationsTableName: 'migrations',
   migrations: ['dist/**/migrations/*.js'],
-});
+
+  seeds: ['dist/**/*.seeder.js'],
+};
+
+export const AppDataSource = new DataSource(options);

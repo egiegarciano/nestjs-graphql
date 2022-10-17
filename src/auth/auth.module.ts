@@ -7,6 +7,7 @@ import { AuthResolver } from './auth.resolver';
 import { OwnersModule } from 'src/owners/owners.module';
 import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { AdminModule } from 'src/admin/admin.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       secret: 'hide-me', // process.env.JWT_SECRET
     }),
     OwnersModule,
+    AdminModule,
   ],
   providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy],
 })

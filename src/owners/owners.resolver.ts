@@ -4,6 +4,9 @@ import { UseGuards } from '@nestjs/common';
 import { OwnersService } from './owners.service';
 import { Owner } from '../entities/owner.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
+import { Role } from 'src/lib/enums/role.enum';
 
 @Resolver(() => Owner)
 export class OwnersResolver {
@@ -20,8 +23,9 @@ export class OwnersResolver {
     return this.ownersService.findOneOWner(username);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.USER)
   @Query(() => Owner, { name: 'me' })
-  @UseGuards(JwtAuthGuard)
   getMe(@Context() context: any) {
     return this.ownersService.findOwnerAccessToken(context.req.user.id);
   }
@@ -32,7 +36,7 @@ export class OwnersResolver {
   //   return this.ownersService.update(updateOwnerInput.id, updateOwnerInput);
   // }
 
-  @Mutation(() => Owner)
+  @Mutation(() => String)
   removeOwner(@Args('id', { type: () => Int }) id: number) {
     return this.ownersService.remove(id);
   }

@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 
 import { CreateOwnerInput } from './dto/create-owner.input';
 import { Owner } from '../entities/owner.entity';
-import { OwnerResponse } from 'src/auth/dto/owner-response';
 
 @Injectable()
 export class OwnersService {
@@ -26,13 +25,13 @@ export class OwnersService {
     return this.ownersRespository.findOneOrFail({ where: { id: id } });
   }
 
-  findOneOWner(username: string): Promise<Owner> {
+  findOneOWner(email: string): Promise<Owner> {
     return this.ownersRespository.findOne({
-      where: { username },
+      where: { email },
     });
   }
 
-  updateCredential(owner: OwnerResponse) {
+  updateCredential(owner: Owner) {
     return this.ownersRespository.save(owner);
   }
 
