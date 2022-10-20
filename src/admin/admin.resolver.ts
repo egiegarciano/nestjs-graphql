@@ -28,7 +28,7 @@ export class AdminResolver {
   @Roles(Role.ADMIN)
   @Query(() => Admin, { name: 'currentAdmin' })
   getMe(@Context() context: any) {
-    return this.adminService.findOwnerAccessToken(context.req.user.id);
+    return this.adminService.findAdminAccessToken(context.req.user.id);
   }
 
   // @Mutation('updateAdmin')

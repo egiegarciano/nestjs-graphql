@@ -1,6 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {
+  IPaginationMeta,
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 import { CreateOwnerInput } from './dto/create-owner.input';
 import { Owner } from '../entities/owner.entity';
@@ -45,6 +51,26 @@ export class OwnersService {
     }
 
     return user;
+  }
+
+  async paginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Owner, IPaginationMeta>> {
+    // const qb = this.ownersRespository.createQueryBuilder('owner');
+    // qb.orderBy('owner.id', 'ASC');
+
+    const { items, meta } = await paginate<Owner>(
+      this.ownersRespository,
+      options,
+      {
+        order: { id: 'ASC' },
+      },
+    );
+
+    return {
+      items,
+      meta,
+    };
   }
 
   // not working

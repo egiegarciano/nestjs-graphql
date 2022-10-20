@@ -7,6 +7,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/lib/enums/role.enum';
+import { DefaultPaginationArgs } from './dto/default-pagination.args';
+import { OwnerPaginateOutput } from './dto/owner-paginate.output';
 
 @Resolver(() => Owner)
 export class OwnersResolver {
@@ -30,12 +32,12 @@ export class OwnersResolver {
     return this.ownersService.findOwnerAccessToken(context.req.user.id);
   }
 
-  // not working yet
-  // @Mutation(() => Owner)
-  // updateOwner(@Args('updateOwnerInput') updateOwnerInput: UpdateOwnerInput) {
-  //   return this.ownersService.update(updateOwnerInput.id, updateOwnerInput);
-  // }
+  @Query(() => OwnerPaginateOutput)
+  ownerPaginate(@Args() pagination: DefaultPaginationArgs) {
+    return this.ownersService.paginate(pagination);
+  }
 
+  // not working yet
   @Mutation(() => String)
   removeOwner(@Args('id', { type: () => Int }) id: number) {
     return this.ownersService.remove(id);

@@ -16,6 +16,7 @@ const options: DataSourceOptions & SeederOptions = {
   migrations: ['dist/**/migrations/*.js'],
 
   seeds: ['dist/**/*.seeder.js'],
+  factories: ['dist/**/*.factory.js'],
 };
 
 export const AppDataSource = new DataSource(options);

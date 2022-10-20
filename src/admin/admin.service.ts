@@ -17,20 +17,16 @@ export class AdminService {
   // }
 
   async findOneAdmin(email: string): Promise<Admin> {
-    const admin = await this.adminRespository.findOneOrFail({
+    return await this.adminRespository.findOne({
       where: { email },
     });
-
-    if (!admin) throw new Error();
-
-    return admin;
   }
 
   updateCredential(admin: Admin) {
     return this.adminRespository.save(admin);
   }
 
-  async findOwnerAccessToken(adminId: number): Promise<Admin> {
+  async findAdminAccessToken(adminId: number): Promise<Admin> {
     const admin = await this.adminRespository.findOne({
       where: { id: adminId },
     });

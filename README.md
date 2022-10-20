@@ -12,7 +12,6 @@ docker-compose exec backend npm install
 docker-compose exec backend npm migration:run
 ```
 
-
 ## Running Migration
 
 ```
@@ -27,4 +26,13 @@ $ npm run migration:run
 
 # Revert migrations
 $ npm run migration:revert
+```
+
+## Running Seeder
+
+```
+$ docker-compose exec backend npm run seed
+
+# Specify the seed class to run
+$ docker-compose exec backend npm run seed --seed=user.seeder.ts
 ```

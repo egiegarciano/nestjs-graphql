@@ -44,6 +44,7 @@
     "cross-var": "^1.1.0",
     "graphql": "^16.6.0",
     "mysql2": "^2.3.3",
+    "nestjs-typeorm-paginate": "^4.0.2",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",

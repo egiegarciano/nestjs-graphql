@@ -34,7 +34,6 @@ export class AuthService {
 
     const passwordIsInvalid = await bcrypt.compare(password, user.password);
 
-    // pwede ra e combine si !user && !passwordInvalid ug dli nalang mag dungag ug sampleErrors
     // if ever gali e combine e butang nalaang and pag throw ug error sa local strategy sa validate
     if (!passwordIsInvalid) {
       throw new AuthenticationError('Credentials are invalid');
@@ -97,12 +96,16 @@ export class AuthService {
   async adminLogin(loginAdminInput: LoginAdminInput) {
     const admin = await this.adminService.findOneAdmin(loginAdminInput.email);
 
+    if (!admin) {
+      throw new AuthenticationError('No Admin user found');
+    }
+
     const passwordIsInvalid = await bcrypt.compare(
       loginAdminInput.password,
       admin.password,
     );
 
-    if (!admin && !passwordIsInvalid) {
+    if (!passwordIsInvalid) {
       throw new AuthenticationError('Credentials are invalid');
     }
 

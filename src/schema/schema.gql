@@ -24,6 +24,19 @@ type Pet {
   owner: Owner
 }
 
+type MetaInfo {
+  itemCount: Int!
+  totalItems: Int!
+  itemsPerPage: Int!
+  totalPages: Int!
+  currentPage: Int!
+}
+
+type OwnerPaginateOutput {
+  items: [Owner!]!
+  meta: MetaInfo!
+}
+
 type Admin {
   id: Int!
   name: String!
@@ -47,6 +60,7 @@ type Query {
   owners: [Owner!]!
   getOwner(username: String!): Owner!
   me: Owner!
+  ownerPaginate(limit: Int = 10, page: Int = 1): OwnerPaginateOutput!
   getOneAdmin(email: String!): Admin!
   currentAdmin: Admin!
 }
