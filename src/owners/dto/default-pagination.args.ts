@@ -2,7 +2,7 @@ import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { IsPositive } from 'class-validator';
 
 @ArgsType()
-export class DefaultPaginationArgs {
+export class OptionsPaginationArgs {
   @Field(() => Int, { defaultValue: 10 })
   @IsPositive()
   limit: number;

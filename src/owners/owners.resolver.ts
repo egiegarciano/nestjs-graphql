@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorator/roles.decorator';
 import { Role } from 'src/lib/enums/role.enum';
-import { DefaultPaginationArgs } from './dto/default-pagination.args';
+import { OptionsPaginationArgs } from './dto/default-pagination.args';
 import { OwnerPaginateOutput } from './dto/owner-paginate.output';
 
 @Resolver(() => Owner)
@@ -33,8 +33,11 @@ export class OwnersResolver {
   }
 
   @Query(() => OwnerPaginateOutput)
-  ownerPaginate(@Args() pagination: DefaultPaginationArgs) {
-    return this.ownersService.paginate(pagination);
+  ownerPaginate(
+    @Args() pagination: OptionsPaginationArgs,
+    @Args('email', { nullable: true }) email?: string,
+  ) {
+    return this.ownersService.paginate(pagination, email);
   }
 
   // not working yet

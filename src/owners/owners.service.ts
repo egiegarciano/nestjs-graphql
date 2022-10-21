@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import {
   IPaginationMeta,
   IPaginationOptions,
@@ -54,6 +54,25 @@ export class OwnersService {
   }
 
   async paginate(
+    options: IPaginationOptions,
+    email: string,
+  ): Promise<Pagination<Owner, IPaginationMeta>> {
+    const qb = this.ownersRespository.createQueryBuilder('owner');
+    qb.orderBy('owner.id', 'ASC');
+
+    if (email) {
+      qb.where({ email: ILike(`%${email}%`) });
+    }
+
+    const { items, meta } = await paginate<Owner>(qb, options);
+
+    return {
+      items,
+      meta,
+    };
+  }
+
+  async paginateFilterByEmail(
     options: IPaginationOptions,
   ): Promise<Pagination<Owner, IPaginationMeta>> {
     // const qb = this.ownersRespository.createQueryBuilder('owner');

@@ -60,7 +60,7 @@ type Query {
   owners: [Owner!]!
   getOwner(username: String!): Owner!
   me: Owner!
-  ownerPaginate(limit: Int = 10, page: Int = 1): OwnerPaginateOutput!
+  ownerPaginate(limit: Int = 10, page: Int = 1, email: String): OwnerPaginateOutput!
   getOneAdmin(email: String!): Admin!
   currentAdmin: Admin!
 }
