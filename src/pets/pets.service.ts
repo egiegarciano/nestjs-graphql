@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -6,6 +6,10 @@ import { Pet } from 'src/entities/pet.entity';
 import { CreatePetInput } from './dto/create-pet.input';
 import { OwnersService } from 'src/owners/owners.service';
 import { Owner } from 'src/entities/owner.entity';
+import { createWriteStream } from 'fs';
+import { unlink } from 'fs/promises';
+import { join, parse } from 'path';
+import { FileUpload } from 'graphql-upload';
 
 @Injectable()
 export class PetService {
@@ -14,10 +18,74 @@ export class PetService {
     private readonly ownerService: OwnersService,
   ) {}
 
-  createPet(createPetInput: CreatePetInput): Promise<Pet> {
-    const newPet = this.petsRepository.create(createPetInput);
+  async createPet(input: CreatePetInput, image: FileUpload): Promise<Pet> {
+    const { createReadStream, filename } = image;
+    const { name, ownerId, type } = input;
 
-    return this.petsRepository.save(newPet); // insert
+    // you can parse the filename and get the name and its extension
+    // const { ext, name } = parse(filename);
+
+    // how about handling multi request files
+
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const modifiedFilename = uniqueSuffix + '-' + filename;
+
+    createReadStream().pipe(
+      createWriteStream(
+        join(process.cwd(), `./src/upload/${modifiedFilename}`),
+      ),
+    );
+
+    const newPet = this.petsRepository.create({
+      image: modifiedFilename,
+      name,
+      type,
+      ownerId,
+    });
+
+    return await this.petsRepository.save(newPet);
+  }
+
+  async updatePetImage(name: string, newImage: FileUpload) {
+    const { createReadStream, filename: newFilename } = newImage;
+
+    const oldImageFilename = await this.petsRepository.findOneBy({
+      name,
+    });
+
+    // Remove the old image file
+    try {
+      // If exist ang file
+      if (oldImageFilename) {
+        await unlink(
+          join(process.cwd(), `./src/upload/${oldImageFilename.image}`),
+        );
+      }
+    } catch (error) {
+      console.log('Error happend while deleting the file', error);
+    }
+
+    // unlink('path/file.txt', (err) => {
+    //   if (err) throw err;
+    //   console.log('path/file.txt was deleted');
+    // });
+
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const modifiedFilename = uniqueSuffix + '-' + newFilename;
+
+    createReadStream().pipe(
+      createWriteStream(
+        join(process.cwd(), `./src/upload/${modifiedFilename}`),
+      ),
+    );
+
+    oldImageFilename.image = modifiedFilename;
+
+    return await this.petsRepository.save(oldImageFilename);
+
+    // return {
+    //   message: 'Update image successfully',
+    // };
   }
 
   async findAll(): Promise<Pet[]> {

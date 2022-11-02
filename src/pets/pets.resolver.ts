@@ -7,6 +7,8 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
+import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.js';
+import { FileUpload } from 'graphql-upload';
 
 import { Pet } from 'src/entities/pet.entity';
 import { Owner } from 'src/entities/owner.entity';
@@ -35,7 +37,19 @@ export class PetsReolver {
   @Mutation(() => Pet)
   createPet(
     @Args('createPetInput') createPetInput: CreatePetInput,
+    @Args('image', { type: () => GraphQLUpload })
+    image: FileUpload,
   ): Promise<Pet> {
-    return this.petService.createPet(createPetInput);
+    return this.petService.createPet(createPetInput, image);
+  }
+
+  // modify this api to also update other info of the pet
+  @Mutation(() => Pet)
+  updatePetImage(
+    @Args('name') name: string,
+    @Args('newimage', { type: () => GraphQLUpload })
+    newImage: FileUpload,
+  ): Promise<Pet> {
+    return this.petService.updatePetImage(name, newImage);
   }
 }

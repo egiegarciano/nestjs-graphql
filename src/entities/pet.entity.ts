@@ -18,6 +18,10 @@ export class Pet {
   type?: string;
 
   @Column({ nullable: true })
+  @Field({ nullable: true })
+  image?: string;
+
+  @Column({ nullable: true })
   @Field(() => Int, { nullable: true })
   ownerId?: number;
 

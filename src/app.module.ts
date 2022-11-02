@@ -25,6 +25,8 @@ import { CustomEmailScalar } from './lib/custom-scalar-type/GraphQLEmail';
         origin: 'http://localhost:3000',
         credentials: true,
       },
+      // debug: false,
+      csrfPrevention: true,
       // resolvers: { Email: CustomEmailScalar },
     }),
     PetsModule,
