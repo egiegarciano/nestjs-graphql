@@ -68,7 +68,7 @@ type Query {
 
 type Mutation {
   createPet(createPetInput: CreatePetInput!, image: Upload!): Pet!
-  updatePetImage(name: String!, newimage: Upload!): Pet!
+  updatePetInfo(updatePetInfo: updatePetInput!, newimage: Upload): Pet!
   removeOwner(id: Int!): String!
   login(loginUserInput: LoginUserInput!): LoginResponse!
   signup(signupUserInput: CreateOwnerInput!): Owner!
@@ -85,6 +85,13 @@ input CreatePetInput {
 
 """The `Upload` scalar type represents a file upload."""
 scalar Upload
+
+input updatePetInput {
+  id: Int!
+  name: String!
+  type: String
+  ownerId: Int
+}
 
 input LoginUserInput {
   email: String!

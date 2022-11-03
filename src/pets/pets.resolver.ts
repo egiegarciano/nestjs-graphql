@@ -14,6 +14,7 @@ import { Pet } from 'src/entities/pet.entity';
 import { Owner } from 'src/entities/owner.entity';
 import { CreatePetInput } from './dto/create-pet.input';
 import { PetService } from './pets.service';
+import { updatePetInput } from './dto/update-pet.input';
 
 @Resolver(() => Pet)
 export class PetsReolver {
@@ -45,11 +46,11 @@ export class PetsReolver {
 
   // modify this api to also update other info of the pet
   @Mutation(() => Pet)
-  updatePetImage(
-    @Args('name') name: string,
-    @Args('newimage', { type: () => GraphQLUpload })
-    newImage: FileUpload,
+  updatePetInfo(
+    @Args('updatePetInfo') updatePetInfo: updatePetInput,
+    @Args('newimage', { type: () => GraphQLUpload, nullable: true })
+    newImage?: FileUpload,
   ): Promise<Pet> {
-    return this.petService.updatePetImage(name, newImage);
+    return this.petService.updatePetInfo(updatePetInfo, newImage);
   }
 }

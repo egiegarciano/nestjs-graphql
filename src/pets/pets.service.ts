@@ -10,6 +10,7 @@ import { createWriteStream } from 'fs';
 import { unlink } from 'fs/promises';
 import { join, parse } from 'path';
 import { FileUpload } from 'graphql-upload';
+import { updatePetInput } from './dto/update-pet.input';
 
 @Injectable()
 export class PetService {
@@ -19,6 +20,7 @@ export class PetService {
   ) {}
 
   async createPet(input: CreatePetInput, image: FileUpload): Promise<Pet> {
+    // How to validate the image file upload
     const { createReadStream, filename } = image;
     const { name, ownerId, type } = input;
 
@@ -46,42 +48,47 @@ export class PetService {
     return await this.petsRepository.save(newPet);
   }
 
-  async updatePetImage(name: string, newImage: FileUpload) {
-    const { createReadStream, filename: newFilename } = newImage;
+  async updatePetInfo(updatePetInfo: updatePetInput, newImage: FileUpload) {
+    const { id, name, ownerId, type } = updatePetInfo;
 
-    const oldImageFilename = await this.petsRepository.findOneBy({
-      name,
+    const pet = await this.petsRepository.findOneBy({
+      id,
     });
 
-    // Remove the old image file
-    try {
-      // If exist ang file
-      if (oldImageFilename) {
-        await unlink(
-          join(process.cwd(), `./src/upload/${oldImageFilename.image}`),
-        );
+    if (!pet) throw new Error('Pet does not exist');
+
+    if (!!newImage) {
+      const { createReadStream, filename: newFilename } = newImage;
+
+      // Remove the old image file
+      try {
+        await unlink(join(process.cwd(), `./src/upload/${pet.image}`));
+      } catch (error) {
+        console.log('Error happend while deleting the file', error);
       }
-    } catch (error) {
-      console.log('Error happend while deleting the file', error);
+
+      // Synchronous
+      // unlink('path/file.txt', (err) => {
+      //   if (err) throw err;
+      //   console.log('path/file.txt was deleted');
+      // });
+
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const modifiedFilename = uniqueSuffix + '-' + newFilename;
+
+      createReadStream().pipe(
+        createWriteStream(
+          join(process.cwd(), `./src/upload/${modifiedFilename}`),
+        ),
+      );
+
+      pet.image = modifiedFilename;
     }
 
-    // unlink('path/file.txt', (err) => {
-    //   if (err) throw err;
-    //   console.log('path/file.txt was deleted');
-    // });
+    pet.name = name || pet.name;
+    pet.type = type || pet.type;
 
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const modifiedFilename = uniqueSuffix + '-' + newFilename;
-
-    createReadStream().pipe(
-      createWriteStream(
-        join(process.cwd(), `./src/upload/${modifiedFilename}`),
-      ),
-    );
-
-    oldImageFilename.image = modifiedFilename;
-
-    return await this.petsRepository.save(oldImageFilename);
+    return await this.petsRepository.save(pet);
 
     // return {
     //   message: 'Update image successfully',
@@ -92,8 +99,8 @@ export class PetService {
     return this.petsRepository.find(); // SELECT * pet
   }
 
-  findOne(petId: number): Promise<Pet> {
-    return this.petsRepository.findOneBy({ id: petId });
+  findOne(id: number): Promise<Pet> {
+    return this.petsRepository.findOneBy({ id });
   }
 
   getOwner(ownerId: number): Promise<Owner> {
