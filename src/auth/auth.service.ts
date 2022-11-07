@@ -9,6 +9,7 @@ import { LogoutInput } from './dto/logout-user.input';
 import { TokenPayload } from 'src/lib/types/tokenPayload';
 import { Owner } from 'src/entities/owner.entity';
 import { AdminService } from 'src/admin/admin.service';
+import { MailerService } from 'src/mailer/mailer.service';
 import { Role } from 'src/lib/enums/role.enum';
 import { Admin } from 'src/entities/admin.entity';
 import { LoginAdminInput } from './dto/login-admin.input';
@@ -19,6 +20,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly ownerService: OwnersService,
     private readonly adminService: AdminService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<Owner> {
@@ -37,6 +39,11 @@ export class AuthService {
     // if ever gali e combine e butang nalaang and pag throw ug error sa local strategy sa validate
     if (!passwordIsInvalid) {
       throw new AuthenticationError('Credentials are invalid');
+    }
+
+    // Add check here if user is confirmed
+    if (!user.confirmed) {
+      throw new AuthenticationError('Email not yet confirm');
     }
 
     if (user && passwordIsInvalid) {
@@ -71,6 +78,7 @@ export class AuthService {
     const user = await this.ownerService.findOneOWner(signupUserInput.email);
 
     if (user) {
+      // shoudl throw specific user bad input error
       throw new Error('User already exists!'); // haven't try to parse this in frontend
     }
 
@@ -78,7 +86,16 @@ export class AuthService {
 
     const password = await bcrypt.hash(passwordInput, 10);
 
-    return this.ownerService.createOwner({ password, ...rest });
+    const createOwner = await this.ownerService.createOwner({
+      password,
+      ...rest,
+    });
+
+    const token = this.jwtService.sign({ email: signupUserInput.email });
+
+    await this.mailerService.confirmation(signupUserInput.email, token);
+
+    return createOwner;
   }
 
   async logout({ email }: LogoutInput) {

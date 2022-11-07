@@ -13,10 +13,11 @@ import { AppDataSource } from 'ormconfig';
 import { AuthModule } from './auth/auth.module';
 import { AdminModule } from './admin/admin.module';
 import { CustomEmailScalar } from './lib/custom-scalar-type/GraphQLEmail';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(AppDataSource.options),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       autoSchemaFile: join(process.cwd(), 'src/schema/schema.gql'),
@@ -33,6 +34,7 @@ import { CustomEmailScalar } from './lib/custom-scalar-type/GraphQLEmail';
     OwnersModule,
     AuthModule,
     AdminModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

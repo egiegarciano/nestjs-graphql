@@ -33,4 +33,7 @@ export class Owner {
   @OneToMany(() => Pet, (pet) => pet.owner)
   @Field(() => [Pet], { nullable: true }) // When the field is an array, we must manually indicate the array type in the Field() decorator's type function, as shown below:
   pets?: Pet[];
+
+  @Column({ type: 'boolean', default: false })
+  confirmed: boolean;
 }
