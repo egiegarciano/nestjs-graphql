@@ -75,6 +75,7 @@ type Mutation {
   logout(logoutInput: LogoutInput!): LogoutOutput!
   adminLogin(loginAdminInput: LoginAdminInput!): Admin!
   adminLogout(logoutInput: LogoutInput!): LogoutOutput!
+  confirmOwnerEmail(email: String!): Owner!
 }
 
 input CreatePetInput {

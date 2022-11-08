@@ -66,7 +66,7 @@ export class AuthService {
 
     user.access_token = access_token;
 
-    await this.ownerService.updateCredential(user);
+    await this.ownerService.updateOwner(user);
 
     return {
       access_token: access_token,
@@ -103,7 +103,7 @@ export class AuthService {
 
     user.access_token = '';
 
-    await this.ownerService.updateCredential(user);
+    await this.ownerService.updateOwner(user);
 
     return {
       message: 'Successfully logout',
@@ -156,5 +156,17 @@ export class AuthService {
     return {
       message: 'Successfully logout.',
     };
+  }
+
+  async confirmUserEmail(email: string): Promise<Owner> {
+    const owner = await this.ownerService.findOneOWner(email);
+
+    // if (!owner) {}
+
+    owner.confirmed = true;
+
+    await this.ownerService.updateOwner(owner);
+
+    return owner;
   }
 }

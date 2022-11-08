@@ -37,7 +37,7 @@ export class OwnersService {
     });
   }
 
-  updateCredential(owner: Owner) {
+  updateOwner(owner: Owner) {
     return this.ownersRespository.save(owner);
   }
 

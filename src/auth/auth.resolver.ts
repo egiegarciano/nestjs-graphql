@@ -45,4 +45,9 @@ export class AuthResolver {
   adminLogout(@Args('logoutInput') logoutInput: LogoutInput) {
     return this.authService.adminLogout(logoutInput);
   }
+
+  @Mutation(() => Owner)
+  confirmOwnerEmail(@Args('email') email: string) {
+    return this.authService.confirmUserEmail(email);
+  }
 }
