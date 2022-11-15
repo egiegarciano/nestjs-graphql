@@ -37,7 +37,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     // this will be available in the context
 
     if (payload.role === Role.USER) {
-      const user = await this.ownerService.findOneOWner(payload.email);
+      const user = await this.ownerService.findOneOwner(payload.email);
       if (!user || user.access_token === '')
         throw new AuthenticationError('User is not logged in');
 

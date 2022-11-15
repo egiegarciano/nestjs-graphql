@@ -31,7 +31,7 @@ export class OwnersService {
     return this.ownersRespository.findOneOrFail({ where: { id: id } });
   }
 
-  findOneOWner(email: string): Promise<Owner> {
+  findOneOwner(email: string): Promise<Owner> {
     return this.ownersRespository.findOne({
       where: { email },
     });

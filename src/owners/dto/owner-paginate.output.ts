@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Owner } from 'src/entities/owner.entity';
+import { Owner } from '../../entities/owner.entity';
 
 @ObjectType()
 class MetaInfo {

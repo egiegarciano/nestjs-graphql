@@ -1,8 +1,8 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Pet } from 'src/entities/pet.entity';
-import { Role } from 'src/lib/enums/role.enum';
+import { Pet } from '../entities/pet.entity';
+import { Role } from '../lib/enums/role.enum';
 
 @Entity()
 @ObjectType()

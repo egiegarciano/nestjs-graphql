@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Admin } from 'src/entities/admin.entity';
+import { Admin } from '../entities/admin.entity';
 import { Repository } from 'typeorm';
 
 import { CreateAdminInput } from './dto/create-admin.input';

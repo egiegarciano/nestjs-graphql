@@ -3,15 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthenticationError } from 'apollo-server-express';
 
-import { OwnersService } from 'src/owners/owners.service';
+import { OwnersService } from '../owners/owners.service';
 import { CreateOwnerInput } from 'src/owners/dto/create-owner.input';
 import { LogoutInput } from './dto/logout-user.input';
 import { TokenPayload } from 'src/lib/types/tokenPayload';
 import { Owner } from 'src/entities/owner.entity';
-import { AdminService } from 'src/admin/admin.service';
-import { MailerService } from 'src/mailer/mailer.service';
-import { Role } from 'src/lib/enums/role.enum';
-import { Admin } from 'src/entities/admin.entity';
+import { AdminService } from '../admin/admin.service';
+import { MailerService } from '../mailer/mailer.service';
 import { LoginAdminInput } from './dto/login-admin.input';
 
 @Injectable()
@@ -24,7 +22,7 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string): Promise<Owner> {
-    const user = await this.ownerService.findOneOWner(email);
+    const user = await this.ownerService.findOneOwner(email);
 
     const sampleErrors: { property: string; message: string }[] = [];
 
@@ -36,12 +34,10 @@ export class AuthService {
 
     const passwordIsInvalid = await bcrypt.compare(password, user.password);
 
-    // if ever gali e combine e butang nalaang and pag throw ug error sa local strategy sa validate
     if (!passwordIsInvalid) {
       throw new AuthenticationError('Credentials are invalid');
     }
 
-    // Add check here if user is confirmed
     if (!user.confirmed) {
       throw new AuthenticationError('Email not yet confirm');
     }
@@ -62,7 +58,7 @@ export class AuthService {
 
     const access_token = this.jwtService.sign(tokenPayload);
 
-    const user = await this.ownerService.findOneOWner(owner.email);
+    const user = await this.ownerService.findOneOwner(owner.email);
 
     user.access_token = access_token;
 
@@ -75,7 +71,7 @@ export class AuthService {
   }
 
   async signup(signupUserInput: CreateOwnerInput) {
-    const user = await this.ownerService.findOneOWner(signupUserInput.email);
+    const user = await this.ownerService.findOneOwner(signupUserInput.email);
 
     if (user) {
       // shoudl throw specific user bad input error
@@ -99,7 +95,7 @@ export class AuthService {
   }
 
   async logout({ email }: LogoutInput) {
-    const user = await this.ownerService.findOneOWner(email);
+    const user = await this.ownerService.findOneOwner(email);
 
     user.access_token = '';
 
@@ -159,7 +155,7 @@ export class AuthService {
   }
 
   async confirmUserEmail(email: string): Promise<Owner> {
-    const owner = await this.ownerService.findOneOWner(email);
+    const owner = await this.ownerService.findOneOwner(email);
 
     // if (!owner) {}
 
