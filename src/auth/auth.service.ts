@@ -66,7 +66,7 @@ export class AuthService {
 
     return {
       access_token: access_token,
-      owner,
+      owner: user,
     };
   }
 
